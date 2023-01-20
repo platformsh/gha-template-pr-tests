@@ -5,6 +5,9 @@ inputs:
   github-token:
     description: 'Github token to the repository so we can work with the github api. Typically GITHUB_TOKEN'
     required: true
+  baseline-url:
+    description: 'The URL for the production version of the site. This will be used to create the reference for VRT'
+    required: true
 #  paths_location:
 #    description: "Path to the VRT theme-paths.js file. Default is ./.github/tests/vrt/ from the theme's repo root"
 #    default: "./.github/tests/vrt/"
@@ -30,6 +33,7 @@ runs:
     - name: 'Set up Github token'
       id: setup-gh-token
       shell: bash
+      # @todo is there an advantage to doing this over just using ${{ inputs.github-token }}
       run: echo "GITHUB_TOKEN=${{ inputs.github-token }}" >> $GITHUB_ENV
 
     # Verify the Baseline URL is set as a repository variable since we cant do VRT without it
@@ -37,7 +41,7 @@ runs:
       id: verify-baseline-url
       shell: bash
       run: |
-        baseline=${{ vars.BASELINE_URL }}
+        baseline=${{ inputs.baseline-url }}
         if [[ -z ${baseline} ]]; then
           echo "::warning::The url to use for generating baseline images must be set as a repository variable"
           exit 1;
@@ -55,7 +59,7 @@ runs:
       id: test-environment
       uses: gilzow/gha-vrt@feat/import-scenarios
       with:
-        baseline_url: ${{ vars.BASELINE_URL }}
+        baseline_url: ${{ inputs.baseline-url }}
         test_url: ${{ steps.get-target-url.outputs.target_url }}
         report_results: true
 
