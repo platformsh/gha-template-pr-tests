@@ -18,14 +18,12 @@ inputs:
 
 
 # Things we need to do
-# Verify the URLs we were given respond?
-# Install backstop
-# Pass the reference url to backstop
-# Run npm run-script backstop:reference
-# Pass the test url to backstop
-# Run npm run-script backstop:test
-# if test fails report back `false` and return the html report?
-# if test passes, report back `true`
+# Set the GITHUB token
+# Verify we have a baseline URL
+# Get the PR environment URL
+# Perform the VRT
+# Post a comment to the PR if the VRT fails indicating where they can view the VRT results report
+# Report back the VRT results to the run
 runs:
   using: "composite"
   steps:
