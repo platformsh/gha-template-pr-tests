@@ -43,7 +43,7 @@ runs:
       run: |
         baseline=${{ inputs.baseline-url }}
         if [[ -z ${baseline} ]]; then
-          echo "::warning::The url to use for generating baseline images must be set as a repository variable"
+          echo "::warning::The baseline url is required and can not be blank."
           exit 1;
         fi
 

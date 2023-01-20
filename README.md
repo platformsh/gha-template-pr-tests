@@ -44,6 +44,6 @@ jobs:
 * [actions/github-script](https://github.com/actions/github-script)
 
 ## Roadmap
-* Add a check on `baseline-url` for trailing slash, add if missing
+* Expand checks on `baseline-url` to ensure a valid URL, and contains trailing slash, add if missing
 * Add behavioral testing
 * Add performance/[Blackfire.io](https://blackfire.io/) testing
