@@ -1,0 +1,93 @@
+name: 'Pull Request Testing for Platform.sh Templates'
+description: 'Runs a series of tests on a Platform.sh template project for every Pull Request'
+# The following are inputs we might need to implement later so an individual theme can adjust
+inputs:
+  github-token:
+    description: 'Github token to the repository so we can work with the github api. Typically GITHUB_TOKEN'
+    required: true
+#  paths_location:
+#    description: "Path to the VRT theme-paths.js file. Default is ./.github/tests/vrt/ from the theme's repo root"
+#    default: "./.github/tests/vrt/"
+#  paths_name:
+#    description: "Name of the VRT theme-specific paths file. Not yet implemented"
+#    default: "theme-paths.js"
+#  threshold:
+#    description: 'Percentage of different pixels allowed to pass VRT test'
+#    required: false
+#    default: "0.1"
+
+
+# Things we need to do
+# Verify the URLs we were given respond?
+# Install backstop
+# Pass the reference url to backstop
+# Run npm run-script backstop:reference
+# Pass the test url to backstop
+# Run npm run-script backstop:test
+# if test fails report back `false` and return the html report?
+# if test passes, report back `true`
+runs:
+  using: "composite"
+  steps:
+    - name: 'Set up Github token'
+      id: setup-gh-token
+      shell: bash
+      run: echo "GITHUB_TOKEN=${{ inputs.github-token }}" >> $GITHUB_ENV
+
+    # Verify the Baseline URL is set as a repository variable since we cant do VRT without it
+    - name: 'Verify Baseline URL'
+      id: verify-baseline-url
+      shell: bash
+      run: |
+        baseline=${{ vars.BASELINE_URL }}
+        if [[ -z ${baseline} ]]; then
+          echo "::warning::The url to use for generating baseline images must be set as a repository variable"
+          exit 1;
+        fi
+
+    # Now go get the psh pr environment URL. Can't do VRT without it either
+    - name: 'Wait for psh and get target url'
+      id: get-target-url
+      uses: platformsh/gha-retrieve-psh-prenv-url@main
+      with:
+        github-token: ${{ env.GITHUB_TOKEN }}
+
+    # Now we'll do the actual VRT. The VRT action also performs a smoke test on the baseline url
+    - name: 'Visual Regression Testing'
+      id: test-environment
+      uses: gilzow/gha-vrt@feat/import-scenarios
+      with:
+        baseline_url: ${{ vars.BASELINE_URL }}
+        test_url: ${{ steps.get-target-url.outputs.target_url }}
+        report_results: true
+
+    # If the VRT Test failed we want to create a comment on the PR to check the artifact created by the VRT
+    - name: 'Comment on PR'
+      id: comment-on-failed-PR
+      if: ${{ steps.test-environment.outputs.results == 'false' }}
+      uses: actions/github-script@v6
+      with:
+        script: |
+          address = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}#artifacts`
+          failMsg = `Visual Regression Testing failed. Please view the report artifact at ${address}`
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: failMsg
+          })
+
+    # Finally, report back the status of the VRT
+    - name: 'VRT results?'
+      id: vrt-results
+      shell: bash
+      run: |
+        vrt_results=${{ steps.test-environment.outputs.results }}
+        echo "::notice::The results from the VRT test is ${vrt_results}"
+        if [[ "false" == "${vrt_results}" ]]; then
+          echo "::error::Visual Regression Test failed. See attached artifact."
+
+          exit 1
+        else
+          echo "::notice::Visual Regression Test passed. Carry on, my wayward son."
+        fi
