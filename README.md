@@ -40,7 +40,7 @@ jobs:
 ```
 ## Uses
 * [platformsh/gha-retrieve-psh-prenv-url](https://github.com/platformsh/gha-retrieve-psh-prenv-url/)
-* [platformsh/gha-vrt](https://github.com/platformsh/gha-vrt/)
+* [platformsh/gha-visual-regression-testing](https://github.com/platformsh/gha-visual-regression-testing/)
 * [actions/github-script](https://github.com/actions/github-script)
 
 ## Roadmap
