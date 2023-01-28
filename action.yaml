@@ -57,7 +57,7 @@ runs:
     # Now we'll do the actual VRT. The VRT action also performs a smoke test on the baseline url
     - name: 'Visual Regression Testing'
       id: test-environment
-      uses: platformsh/gha-visual-regression-testing@main
+      uses: platformsh/gha-visual-regression-testing@feat/2-override-default-paths
       with:
         baseline_url: ${{ inputs.baseline-url }}
         test_url: ${{ steps.get-target-url.outputs.target_url }}
