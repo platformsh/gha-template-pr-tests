@@ -11,6 +11,8 @@ test fails, will create a comment in the PR with a link to the visual regression
 access rights to the target repository so we can work with the github api. You can reuse the default `GITHUB_TOKEN` that's created for the runner.
 * `baseline-url` - **REQUIRED**. Full URL to the "production" version of the template. This URL is used to create
 the reference set of images in the visual regression tests. It *must* include a trailing slash.
+* `delay-start` - _Optional_. Delay the start of testing for X seconds after the PR environment is available. Please note
+this is in seconds, not milliseconds. Must be a valid integer.
 ## Outputs
 * None
 ## Example Usage
@@ -37,6 +39,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           baseline-url: ${{ vars.BASELINE_URL }}
+          delay-start: 2
 ```
 ## Uses
 * [platformsh/gha-retrieve-psh-prenv-url](https://github.com/platformsh/gha-retrieve-psh-prenv-url/)

@@ -8,6 +8,10 @@ inputs:
   baseline-url:
     description: 'The URL for the production version of the site. This will be used to create the reference for VRT'
     required: true
+  delay-start:
+    description: 'Delay the start of testing for X seconds after the PR environment is available.'
+    required: false
+    default: ''
 #  paths_location:
 #    description: "Path to the VRT theme-paths.js file. Default is ./.github/tests/vrt/ from the theme's repo root"
 #    default: "./.github/tests/vrt/"
@@ -46,6 +50,20 @@ runs:
           echo "::warning::The baseline url is required and can not be blank."
           exit 1;
         fi
+    - name: 'Verify Delay'
+      id: 'verify-delay'
+      if: ${{ '' ! == inputs.delay-start }}
+      shell: bash
+      run: |
+        if [[ ! ${{ inputs.delay-start }} =~ ^-?[0-9]+$ ]]; then
+          msg="The value you gave for delay-start is not a number. I am ignoring it and will not delay the tests."
+          msg="${msg} If you need to delay the tests, double check the value you've used, and run the action again."
+          echo "::error::${msg}"
+        else
+          # @todo should we do some type of check for crazy-long delays?
+          echo "DELAY_START=${{ inputs.delay-start }}" >> $GITHUB_ENV
+          echo "DELAY=true" >> $GITHUB_ENV
+        fi
 
     # Now go get the psh pr environment URL. Can't do VRT without it either
     - name: 'Wait for psh and get target url'
@@ -53,6 +71,15 @@ runs:
       uses: platformsh/gha-retrieve-psh-prenv-url@main
       with:
         github-token: ${{ env.GITHUB_TOKEN }}
+
+    # Do we need to delay the start of the rest of the tests
+    - name: 'Delay start'
+      id: 'delay-test-start'
+      if: ${{ env.DELAY == 'true' }}
+      shell: bash
+      run: |
+        echo "::notice::Delaying the start of tests for ${DELAY_START} seconds."
+        sleep ${DELAY_START};
 
     # Now we'll do the actual VRT. The VRT action also performs a smoke test on the baseline url
     - name: 'Visual Regression Testing'
