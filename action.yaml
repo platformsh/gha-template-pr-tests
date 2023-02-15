@@ -52,7 +52,7 @@ runs:
         fi
     - name: 'Verify Delay'
       id: 'verify-delay'
-      if: ${{ '' ! == inputs.delay-start }}
+      if: ${{ inputs.delay-start != '' }}
       shell: bash
       run: |
         if [[ ! ${{ inputs.delay-start }} =~ ^-?[0-9]+$ ]]; then
