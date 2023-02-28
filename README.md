@@ -6,6 +6,8 @@ Will check for the status of the PR environment. Once available will retrieve th
 and then begin a visual regression test between the production environment and PR environment. If the visual regression
 test fails, will create a comment in the PR with a link to the visual regression report.
 
+Note that this action assumes it is ok to check the PR environment even if a valid certificate has not been issued when testing begins.
+
 ## Inputs
 * `github-token` - **REQUIRED**. Github [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with 
 access rights to the target repository so we can work with the github api. You can reuse the default `GITHUB_TOKEN` that's created for the runner.
