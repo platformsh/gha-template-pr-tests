@@ -89,7 +89,9 @@ runs:
         baseline_url: ${{ inputs.baseline-url }}
         test_url: ${{ steps.get-target-url.outputs.target_url }}
         report_results: true
-
+        # often the cert provisioning hasn't completed for a PR environment before we begin testing. This causes curl
+        # to error with an exit code of 60
+        test_url_insecure: true
     # If the VRT Test failed we want to create a comment on the PR to check the artifact created by the VRT
     - name: 'Comment on PR'
       id: comment-on-failed-PR
