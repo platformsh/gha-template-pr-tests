@@ -15,6 +15,10 @@ access rights to the target repository so we can work with the github api. You c
 the reference set of images in the visual regression tests. It *must* include a trailing slash.
 * `delay-start` - _Optional_. Delay the start of testing for X seconds after the PR environment is available. Please note
 this is in seconds, not milliseconds. Must be a valid integer.
+* `baseline-header-response` - _Optional_. The header response that we consider valid when checking the root of the 
+baseline URL. Defaults to 200.
+* `test-header-response` - _Optional_. The header response that we consider valid when checking the root of the
+
 ## Outputs
 * None
 ## Example Usage

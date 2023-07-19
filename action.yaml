@@ -12,6 +12,13 @@ inputs:
     description: 'Delay the start of testing for X seconds after the PR environment is available.'
     required: false
     default: ''
+  baseline-header-response:
+    description: 'The header response that we consider valid when checking the root of the baseline URL. Defaults to 200'
+    required: false
+    default: 200
+  test-header-response:
+    description: 'The header response that we consider valid when checking the root of the baseline URL. Defaults to 200'
+    default: 200
 #  paths_location:
 #    description: "Path to the VRT theme-paths.js file. Default is ./.github/tests/vrt/ from the theme's repo root"
 #    default: "./.github/tests/vrt/"
@@ -92,6 +99,9 @@ runs:
         # often the cert provisioning hasn't completed for a PR environment before we begin testing. This causes curl
         # to error with an exit code of 60
         test_url_insecure: true
+        baseline_url_response: ${{ inputs.baseline-header-response }}
+        test_url_response: ${{ inputs.test-header-response }}
+
     # If the VRT Test failed we want to create a comment on the PR to check the artifact created by the VRT
     - name: 'Comment on PR'
       id: comment-on-failed-PR
