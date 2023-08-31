@@ -19,6 +19,10 @@ inputs:
   test-header-response:
     description: 'The header response that we consider valid when checking the root of the baseline URL. Defaults to 200'
     default: 200
+  pr-timeout:
+    description: 'The number of seconds the action should wait for Platform.sh to report back with a PR environment URK. Defaults to 300'
+    required: false
+    default: 300
 #  paths_location:
 #    description: "Path to the VRT theme-paths.js file. Default is ./.github/tests/vrt/ from the theme's repo root"
 #    default: "./.github/tests/vrt/"
@@ -78,6 +82,7 @@ runs:
       uses: platformsh/gha-retrieve-psh-prenv-url@main
       with:
         github-token: ${{ env.GITHUB_TOKEN }}
+        timeout: ${{ inputs.pr-timeout }}
 
     # Do we need to delay the start of the rest of the tests
     - name: 'Delay start'
