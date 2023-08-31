@@ -18,6 +18,7 @@ this is in seconds, not milliseconds. Must be a valid integer.
 * `baseline-header-response` - _Optional_. The header response that we consider valid when checking the root of the 
 baseline URL. Defaults to 200.
 * `test-header-response` - _Optional_. The header response that we consider valid when checking the root of the
+* `pr-timeout` - _Optional_. The number of seconds the action should wait for Platform.sh to report back with a PR environment URL. Defaults to 300
 
 ## Outputs
 * None
