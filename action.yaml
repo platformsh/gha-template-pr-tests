@@ -20,7 +20,7 @@ inputs:
     description: 'The header response that we consider valid when checking the root of the baseline URL. Defaults to 200'
     default: 200
   pr-timeout:
-    description: 'The number of seconds the action should wait for Platform.sh to report back with a PR environment URK. Defaults to 300'
+    description: 'The number of seconds the action should wait for Platform.sh to report back with a PR environment URL. Defaults to 300'
     required: false
     default: 300
 #  paths_location:
